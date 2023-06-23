@@ -6,7 +6,7 @@ class Sphere():
     '''
     A general placeholder for methods pertaining to a sphere object.
     '''
-
+    @staticmethod
     def create(radius: float  = 1,
                center: list = [0, 0, 0]):
             

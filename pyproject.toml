@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "bg-specklepy"
+version = "0.1.0"
+description = ""
+authors = ["Gergő Jedlicska <gergo@jedlicska.com>"]
+readme = "README.md"
+packages = [{include = "bg_specklepy"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+specklepy = "^2.14.1"
+pandas = "^2.0.2"
+numpy = "^1.25.0"
+trimesh = "^3.22.1"
+pydantic = "^1.10.9"
+stringcase = "^1.2.0"
+typer = "^0.9.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff-lsp = "^0.0.35"
+mypy = "^1.4.0"
+pytest = "^7.3.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

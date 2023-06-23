@@ -1,21 +1,17 @@
-import os
-import sys
 import pandas as pd
 import math
-from specklepy.objects.geometry import Base
+from specklepy.objects.base import Base
 from specklepy.objects.other import RenderMaterial
-
-root_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
-sys.path.append(root_folder)
-
-from Geometry.sphere import Sphere
-from SpeckleServer.commit import Commit
-import dependencies
+from bg_specklepy.Geometry.sphere import Sphere
+from bg_specklepy.SpeckleServer.commit import Commit
+from bg_specklepy.SpeckleServer.client import Client
 
 class ColumnOffsetEvaluation():
 
     def __init__(self,
-                 commit_data,
+                 client_obj: Client,
+                 stream_id: str,
+                 commit_data: Base,
                  echo_level : int = 0,
                  tolerance : float = 0.01,
                  scale_spheres : bool = False):
@@ -37,8 +33,8 @@ class ColumnOffsetEvaluation():
         self.tolerance = tolerance
         self.commit_message = "analysis_column_eccentricity"
         self.scale_spheres = scale_spheres
-        self.client_obj = commit_data.client_obj
-        self.stream_obj = commit_data.stream_obj
+        self.client_obj = client_obj
+        self.stream_id = stream_id
         self.column_elements = None
         self.data_frame = None
         self.offset_columns_dataframe = None
@@ -297,7 +293,7 @@ class ColumnOffsetEvaluation():
         if self.echo_level == 1:
             print("[UPDATE]\t:\tPushing commit ...")
 
-        branches = self.client_obj.branch.list(self.stream_obj.id)
+        branches = self.client_obj.branch.list(self.stream_id)
         branch_names = [b.name for b in branches]
 
         if self.echo_level == 1:
@@ -315,12 +311,12 @@ class ColumnOffsetEvaluation():
             if self.echo_level == 1:
                 print("[UPDATE]\t:\tBranch not found, will be created ...")
 
-            self.client_obj.branch.create(self.stream_obj.id,
+            self.client_obj.branch.create(self.stream_id,
                                           "analysis_column_eccentricity",
                                           "Output of the column eccentricity evaluation.")
 
         Commit.send_data(self.client_obj,
-                         self.stream_obj.id,
+                         self.stream_id,
                          self.commit_data,
                          branch_name = "analysis_column_eccentricity",
                          commit_message = self.commit_message)

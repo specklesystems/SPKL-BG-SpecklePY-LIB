@@ -1,12 +1,5 @@
 # Definierte Modell aus dem Beispiel https://speckle.xyz/streams/ff47530e95
 # 3 Stützenversätze
-
-import os
-import sys
-
-root_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
-sys.path.append(root_folder)
-
 from bg_specklepy.SpeckleServer.client import Client
 from bg_specklepy.SpeckleServer.stream import Stream
 from bg_specklepy.SpeckleServer.branch import Branch
