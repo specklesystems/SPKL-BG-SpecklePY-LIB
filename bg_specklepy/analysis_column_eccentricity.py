@@ -56,6 +56,7 @@ def main(speckle_project_data: str, function_inputs: str, speckle_token: str):
     evaluation = ColumnOffsetEvaluation(
                                         client_obj=client_obj, 
                                         stream_id=stream_id,
+                                        commit_object = commit,
                                         commit_data = commit_data,
                                         tolerance = inputs.tolerance,
                                         echo_level = inputs.echo_level,

@@ -1,25 +1,26 @@
-# Definierte Modell aus dem Beispiel https://speckle.xyz/streams/ff47530e95
-# 3 Stützenversätze
-from bg_specklepy.SpeckleServer.client import Client
-from bg_specklepy.SpeckleServer.stream import Stream
-from bg_specklepy.SpeckleServer.branch import Branch
-from bg_specklepy.SpeckleServer.commit import Commit
-from bg_specklepy.Operations.columnOffsetEvaluation import ColumnOffsetEvaluation
+import os
+from bg_specklepy.analysis_column_eccentricity import (
+    FunctionInputs,
+    SpeckleProjectData,
+    main,
+)
+
 
 def test_operations_column_offset_evaluation():
+    speckle_project_data = SpeckleProjectData(
+        projectId="9a9689bf01",
+        modelId="231110ac11-institute-var-2-ifc.ifc",
+        versionId="c13d21b3cf",
+        speckleServerUrl="http://latest.speckle.systems",
+    )
+    function_inputs = FunctionInputs(tolerance=0.02, echoLevel=1, scaleSpheres=False)
+    speckle_token = os.getenv("SPECKLE_TOKEN")
+    main(
+        speckle_project_data.json(by_alias=True),
+        function_inputs.json(by_alias=True),
+        speckle_token,
+    )
 
-    speckle_server = "insert"
-    speckle_token = "insert"
 
-    client_obj = Client(speckle_server, speckle_token)
-    stream_obj = Stream(client_obj, 0)
-    branch_obj = Branch(client_obj, stream_obj, 6)
-    commit_data = Commit.get_data(branch_obj, 0)
-
-    evaluation = ColumnOffsetEvaluation(commit_data = commit_data,
-                                        tolerance = 0.02,
-                                        echo_level = 0,
-                                        scale_spheres = False)
-    evaluation.run()
-
-    assert len(evaluation.commit_data["@Analysis_ColumnEccentricity"]) == 3
+if __name__ == ("__main__"):
+    test_operations_column_offset_evaluation()

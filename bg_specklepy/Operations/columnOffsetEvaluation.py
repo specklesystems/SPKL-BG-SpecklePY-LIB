@@ -3,6 +3,7 @@ import math
 from specklepy.objects.base import Base
 from specklepy.objects.other import RenderMaterial
 from bg_specklepy.Geometry.sphere import Sphere
+from specklepy.api.resources.commit import Commit as SpeckleCommit
 from bg_specklepy.SpeckleServer.commit import Commit
 from bg_specklepy.SpeckleServer.client import Client
 
@@ -11,6 +12,7 @@ class ColumnOffsetEvaluation():
     def __init__(self,
                  client_obj: Client,
                  stream_id: str,
+                 commit_object: SpeckleCommit,
                  commit_data: Base,
                  echo_level : int = 0,
                  tolerance : float = 0.01,
@@ -38,7 +40,7 @@ class ColumnOffsetEvaluation():
         self.column_elements = None
         self.data_frame = None
         self.offset_columns_dataframe = None
-        self.commit_object = None
+        self.commit_object = commit_object
         self._units = 'm'
         self._units_scaling = 1
 
@@ -62,23 +64,26 @@ class ColumnOffsetEvaluation():
         '''
 
         # HACKY - muss einen besseren Weg geben?
-        if not "Revit" in self.commit_data[dir(self.commit_data)[0]][0].speckle_type:
+        # if not "Revit" in self.commit_object.
+        if "Revit" not in self.commit_object.sourceApplication:
             raise NotImplementedError("Column offset evaluation currently restricted to Revit models only.")
 
         if self.echo_level == 1:
             print("[UPDATE]\t:\tRevit model detected ...")
 
-        if self.commit_data.speckle_type != "Objects.Organization.Model":
+        if self.commit_data.speckle_type not in ["Objects.Organization.Model", "Speckle.Core.Models.Collection"]:
             raise AttributeError("Commit data not of correct speckle type. A Revit Model needs to be used as basis input.")
 
+        column_collection = [collection for collection in self.commit_data.elements if collection.applicationId == "Structural Columns"][0]
+        self.column_elements = column_collection.elements
         # More languages to be added. But, Revit export should be standard english
-        for column_parameter in ["@Structural Columns", "@Tragwerksstützen"]:
-            try:
-                self.column_elements = self.commit_data[column_parameter]
-                self.column_parameter = column_parameter
-                break
-            except KeyError:
-                continue
+        # for column_parameter in ["@Structural Columns", "@Tragwerksstützen"]:
+        #     try:
+        #         self.column_elements = self.commit_data[column_parameter]
+        #         self.column_parameter = column_parameter
+        #         break
+        #     except KeyError:
+        #         continue
 
         if self.column_elements[0].units != 'm':
             if self.column_elements[0].units == 'mm':
@@ -237,7 +242,7 @@ class ColumnOffsetEvaluation():
         for index, row in self.offset_columns_dataframe.iterrows():
 
             obj = Base()
-
+            obj.units = self._units
             obj["@column_above"], obj["@column_below"], obj["@offset"] = {}, {}, {}
 
             radius = 0.35 * self._units_scaling
