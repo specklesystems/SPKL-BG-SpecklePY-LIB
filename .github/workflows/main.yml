@@ -34,7 +34,7 @@ jobs:
       - uses: ./github-action
         id: function_publish
         with:
-          speckle_server_url: 'https://automate.speckle.dev'
+          speckle_automate_url: 'https://automate.speckle.dev'
           speckle_token: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_PUBLISH_TOKEN }}
           speckle_function_id: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_ID }}
           speckle_function_input_schema: ${{ env.function_input_schema }}
