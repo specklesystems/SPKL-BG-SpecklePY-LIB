@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11' 
+          python-version: '3.11'
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
@@ -37,5 +37,5 @@ jobs:
           speckle_server_url: 'https://automate.speckle.dev'
           speckle_token: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_PUBLISH_TOKEN }}
           speckle_function_id: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_ID }}
-          speckle_function_input_schema: ${{ env.function_input_schema }} # this is expected to be a file path
+          speckle_function_input_schema: ${{ env.function_input_schema }}
           speckle_function_command: 'python bg_specklepy/analysis_column_eccentricity.py'
