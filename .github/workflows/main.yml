@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.4.0
-      - uses: actions/checkout@v3.4.0
-        with:
-          repository: 'specklesystems/speckle-automate-github-composite-action'
-          path: 'github-action'
-          ref: main
-
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -33,8 +27,8 @@ jobs:
           echo "function_input_schema=$(python schema_generation.py)" >> "$GITHUB_ENV"
       - name: Echo env
         run: echo "$GITHUB_ENV"
-      - uses: ./github-action
-        id: function_publish
+      - name: Speckle Automate Function - Build and Publish
+        uses: specklesystems/speckle-automate-github-composite-action@0.1.0
         with:
           speckle_automate_url: 'https://automate.speckle.dev'
           speckle_token: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_PUBLISH_TOKEN }}
