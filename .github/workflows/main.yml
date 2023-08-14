@@ -1,12 +1,16 @@
 name: 'build and deploy Speckle functions'
-on: # rebuild any PRs and any branch changes
+on:
   pull_request:
   push:
     branches:
       - main
+    tags:
+      - '*'
 
 jobs:
   publish-automate-function-version: # make sure the action works on a clean machine without building
+    env:
+      FUNCTION_SCHEMA_FILE_NAME: functionSchema.json
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.4.0
@@ -23,17 +27,14 @@ jobs:
       - name: Restore dependencies
         run: poetry install
       - name: Extract functionInputSchema
+        id: extract_schema
         run: |
-          echo "function_input_schema=$(python schema_generation.py)" >> "$GITHUB_ENV"
-      - name: Echo env
-        run: echo "$GITHUB_ENV"
+          echo $(python schema_generation.py) > ${HOME}/${{ env.FUNCTION_SCHEMA_FILE_NAME }}
       - name: Speckle Automate Function - Build and Publish
-        uses: specklesystems/speckle-automate-github-composite-action@0.2.1
+        uses: specklesystems/speckle-automate-github-composite-action@0.4.2
         with:
           speckle_automate_url: 'https://automate.speckle.dev'
           speckle_token: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_PUBLISH_TOKEN }}
           speckle_function_id: ${{ secrets.SPECKLE_AUTOMATE_FUNCTION_ID }}
-          speckle_function_input_schema: ${{ env.function_input_schema }}
+          speckle_function_input_schema_file_path: ${{ env.FUNCTION_SCHEMA_FILE_NAME }}
           speckle_function_command: 'python bg_specklepy/analysis_column_eccentricity.py'
-      - name: Debugging with tmate
-        uses: mxschmitt/action-tmate@v3.16
