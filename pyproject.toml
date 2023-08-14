@@ -8,11 +8,11 @@ packages = [{include = "bg_specklepy"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-specklepy = "^2.14.1"
+specklepy = "^2.16.0"
 pandas = "^2.0.2"
 numpy = "^1.25.0"
 trimesh = "^3.22.1"
-pydantic = "^1.10.9"
+pydantic = "^2.1.1"
 stringcase = "^1.2.0"
 typer = "^0.9.0"
 
